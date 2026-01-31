@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Forensics | Smart Audit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/style.css">
+    
+    <style>
+        /* Peta Lebih Besar (75% Tinggi Layar) */
+        #map-section { height: 75vh; border-bottom: 3px solid #2563eb; }
+        
+        /* Dashboard Hasil (Awalnya Sembunyi) */
+        #dashboard { 
+            display: none; 
+            padding: 3rem 2rem; 
+            background: #f8fafc; 
+            min-height: 50vh; /* Agar scroll terasa enak */
+        }
+        
+        /* Kartu Metrik Spesifik */
+        .calculation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .calc-card {
+            background: white; padding: 20px; border-radius: 12px;
+            border: 1px solid #e2e8f0; text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .calc-title { font-size: 0.8rem; color: #64748b; text-transform: uppercase; font-weight: 700; margin-bottom: 10px;}
+        .calc-value { font-size: 2rem; font-weight: 800; color: #0f172a; }
+        .calc-sub { font-size: 0.75rem; color: #94a3b8; margin-top: 5px; }
+
+        /* Operator Matematika Visual */
+        .operator {
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: #cbd5e1; font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div>
+            <h1>Eco-Forensics</h1>
+            <div class="subtitle">Deep Tech Hydrology</div>
+            
+            <div class="info-box">
+                👇 Cari lokasi atau klik peta. Hasil analisis akan muncul di bawah peta.
+            </div>
+
+            <label>Cari Lokasi</label>
+            <div class="search-wrapper">
+                <input type="text" id="search-input" placeholder="Cth: Lengkong, Bandung" onkeypress="handleEnter(event)">
+                <button class="btn-icon" onclick="searchLocation()">🔍</button>
+            </div>
+            <div id="search-error" style="display:none; color: red; font-size: 0.7rem;">Lokasi tidak ditemukan!</div>
+
+            <hr class="divider">
+
+            <label>Latitude</label>
+            <input type="number" id="lat" value="-6.8946" step="0.0001">
+            
+            <label>Longitude</label>
+            <input type="number" id="lon" value="110.6401" step="0.0001">
+
+            <button class="primary" onclick="runAnalysis()">
+                MULAI SCANNING
+            </button>
+        </div>
+        <div class="footer">&copy; 2026 Trio Borma</div>
+    </aside>
+
+    <main>
+        <div id="map-section">
+            <div id="map"></div>
+            <div class="map-overlay">
+                <span id="coord-display">-6.8946, 110.6401</span>
+                <span class="badge-ready">SYSTEM READY</span>
+            </div>
+        </div>
+
+        <div id="dashboard">
+            <div class="result-header">
+                <h2>Laporan Audit Forensik</h2>
+                <span id="date-tag" class="tag">Loading...</span>
+            </div>
+
+            <div class="calculation-grid">
+                <div class="calc-card">
+                    <div class="calc-title">1. AI Soil Scan</div>
+                    <div class="calc-value" id="ai-val">0%</div>
+                    <div class="calc-sub">Kejenuhan dasar dari Satelit</div>
+                </div>
+
+                <div class="calc-card">
+                    <div class="calc-title">2. Curah Hujan</div>
+                    <div class="calc-value" id="rain-val">0 mm</div>
+                    <div class="calc-sub">Rata-rata harian (Open-Meteo)</div>
+                </div>
+
+                <div class="calc-card" style="border-color: #2563eb; background: #eff6ff;">
+                    <div class="calc-title" style="color: #2563eb;">3. Final Saturation</div>
+                    <div class="calc-value" id="final-val" style="color: #2563eb;">0%</div>
+                    <div class="calc-sub">AI Base + Dampak Hujan</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <label>Visualisasi Heatmap</label>
+                    <img id="heatmap" class="heatmap-img" src="" alt="Processing...">
+                </div>
+
+                <div class="card">
+                    <div class="flex-row">
+                        <div>
+                            <label>Status Risiko</label>
+                            <div class="big-val" id="status-text">...</div>
+                        </div>
+                        <div>
+                            <span id="risk-badge" class="badge">...</span>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal">
+                        <label>LIVE LOGS</label>
+                        <pre id="logs">Waiting for input stream...</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <div style="margin-top: 15px; font-weight: 600; color: #475569;">Sedang Menganalisa...</div>
+    </div>
+
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <script src="/static/main.js"></script>
+</body>
+</html>
